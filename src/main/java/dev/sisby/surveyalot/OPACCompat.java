@@ -35,19 +35,18 @@ public class OPACCompat {
 	public static void updateClaimLandmarksForDimension(World world) {
 		WorldLandmarks landmarks = world == null ? null : WorldSummary.of(world).landmarks();
 		if (landmarks == null) return;
-		landmarks.removeAll(world, l -> l.id().toString().startsWith("opac:claim"));
-		Map<UUID, Map<Identifier, Landmark>> changes = new HashMap<>();
+		Map<UUID, Map<Identifier, Landmark>> changed = landmarks.removeAllForBatch(new HashMap<>(), l -> l.id().toString().startsWith("opac:claim"));
 		for (IPlayerClaimInfoAPI player : world instanceof ServerWorld sw ? OpenPACServerAPI.get(sw.getServer()).getServerClaimsManager().getPlayerInfoStream().toList() : OpenPACClientAPI.get().getClaimsManager().getPlayerInfoStream().toList()) {
 			for (IPlayerClaimPosListAPI claimPositions : Optional.ofNullable(player.getDimension(world.getDimensionKey().getValue())).map(d -> d.getStream().toList()).orElse(List.of())) {
 				IPlayerChunkClaimAPI claim = claimPositions.getClaimState();
-				landmarks.putForBatch(changes, Landmark.create(WorldLandmarks.GLOBAL, Identifier.of("opac", "claim/%s%s".formatted(claim.getPlayerId(), claim.getSubConfigIndex() == -1 ? "" : ("/" + claim.getSubConfigIndex()))), b -> b
+				landmarks.putForBatch(changed, Landmark.create(WorldLandmarks.GLOBAL, Identifier.of("opac", "claim/%s%s".formatted(claim.getPlayerId(), claim.getSubConfigIndex() == -1 ? "" : ("/" + claim.getSubConfigIndex()))), b -> b
 					.add(LandmarkComponentTypes.NAME, Text.literal((claim.getSubConfigIndex() == -1 ? player.getClaimsName() == null ? "" : player.getClaimsName() + " - " : player.getClaimsName(claim.getSubConfigIndex()) + " - ") + player.getPlayerUsername() + "'s Claim"))
 					.add(LandmarkComponentTypes.COLOR, claim.getSubConfigIndex() == -1 ? Integer.valueOf(player.getClaimsColor()) : player.getClaimsColor(claim.getSubConfigIndex()))
 					.add(LandmarkComponentTypes.CHUNKS, RegionPos.chunksToRegions(claimPositions.getStream().toList()))
 				));
 			}
 		}
-		landmarks.handleChanged(world, changes, false, null);
+		landmarks.handleChanged(world, changed, world.isClient(), null);
 	}
 
 	public record SurveyalotListener(Function<Identifier, World> worldGetter) implements IClaimsManagerListenerAPI {

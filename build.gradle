@@ -61,21 +61,6 @@ java {
 	targetCompatibility = JavaVersion.VERSION_17
 }
 
-publishing {
-	repositories {
-		maven {
-			name = "SleepingTown"
-			url = "https://repo-api.sleeping.town/"
-			credentials(PasswordCredentials)
-		}
-	}
-	publications {
-		mavenJava(MavenPublication) {
-			from components.java
-		}
-	}
-}
-
 githubRelease {
 	token = "$System.env.GITHUB_TOKEN"
 	owner = project.user

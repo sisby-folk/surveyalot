@@ -11,6 +11,7 @@ version = "$modVersion+$branchName"
 base.archivesName = project.slug
 
 repositories {
+	mavenLocal()
 	maven { url = "https://repo.sleeping.town/" }
 	maven { url = "https://api.modrinth.com/maven" }
 }

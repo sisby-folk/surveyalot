@@ -33,6 +33,7 @@
 			"dev.sisby.surveyalot.Surveyalot"
 		],
 		"client": [
+			"dev.sisby.surveyalot.client.SurveyalotClient"
 		]
 	}
 }

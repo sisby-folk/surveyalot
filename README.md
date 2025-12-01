@@ -1,5 +1,5 @@
 <!--suppress HtmlDeprecatedTag, XmlDeprecatedElement -->
-<center><img alt="mod preview" src=""/></center>
+<center><img alt="mod preview" src="https://cdn.modrinth.com/data/bC31uIRb/images/ac43cc4bbbc48db45997b97af32202c2d62f4c2b.png"/></center>
 
 <center>
 Adds surveyor landmarks for chunk claims.<br/>
@@ -9,7 +9,7 @@ Works with <a href="https://modrinth.com/mod/open-parties-and-claims">OpenPaC</a
 
 ---
 
-
+Works on client OR server, as OpenPAC exposes an API on both.
 
 ## Afterword
 

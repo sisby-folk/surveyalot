@@ -5,37 +5,39 @@ import folk.sisby.surveyor.landmark.Landmark;
 import folk.sisby.surveyor.landmark.WorldLandmarks;
 import folk.sisby.surveyor.landmark.component.LandmarkComponentTypes;
 import folk.sisby.surveyor.util.RegionPos;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
+import xaero.pac.client.api.OpenPACClientAPI;
 import xaero.pac.common.claims.player.api.IPlayerChunkClaimAPI;
+import xaero.pac.common.claims.player.api.IPlayerClaimInfoAPI;
 import xaero.pac.common.claims.player.api.IPlayerClaimPosListAPI;
 import xaero.pac.common.claims.tracker.api.IClaimsManagerListenerAPI;
+import xaero.pac.common.event.api.OPACServerAddonRegister;
 import xaero.pac.common.server.api.OpenPACServerAPI;
-import xaero.pac.common.server.claims.player.api.IServerPlayerClaimInfoAPI;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 
 public class OPACCompat {
 	public static void init() {
-		ServerLifecycleEvents.SERVER_STARTED.register(s -> OpenPACServerAPI.get(s).getServerClaimsManager().getTracker().register(new SurveyalotListener(s)));
+		OPACServerAddonRegister.EVENT.register((s, perms, parties, claims) -> claims.register(new SurveyalotListener(i -> s.getWorld(RegistryKey.of(RegistryKeys.WORLD, i)))));
 	}
 
-	public static void updateClaimLandmarksForDimension(ServerWorld world) {
+	public static void updateClaimLandmarksForDimension(World world) {
 		WorldLandmarks landmarks = world == null ? null : WorldSummary.of(world).landmarks();
 		if (landmarks == null) return;
 		landmarks.removeAll(world, l -> l.id().toString().startsWith("opac:claim"));
 		Map<UUID, Map<Identifier, Landmark>> changes = new HashMap<>();
-		for (IServerPlayerClaimInfoAPI player : OpenPACServerAPI.get(world.getServer()).getServerClaimsManager().getPlayerInfoStream().toList()) {
+		for (IPlayerClaimInfoAPI player : world instanceof ServerWorld sw ? OpenPACServerAPI.get(sw.getServer()).getServerClaimsManager().getPlayerInfoStream().toList() : OpenPACClientAPI.get().getClaimsManager().getPlayerInfoStream().toList()) {
 			for (IPlayerClaimPosListAPI claimPositions : Optional.ofNullable(player.getDimension(world.getDimensionKey().getValue())).map(d -> d.getStream().toList()).orElse(List.of())) {
 				IPlayerChunkClaimAPI claim = claimPositions.getClaimState();
 				landmarks.putForBatch(changes, Landmark.create(WorldLandmarks.GLOBAL, Identifier.of("opac", "claim/%s%s".formatted(claim.getPlayerId(), claim.getSubConfigIndex() == -1 ? "" : ("/" + claim.getSubConfigIndex()))), b -> b
@@ -48,7 +50,7 @@ public class OPACCompat {
 		landmarks.handleChanged(world, changes, false, null);
 	}
 
-	public record SurveyalotListener(MinecraftServer server) implements IClaimsManagerListenerAPI {
+	public record SurveyalotListener(Function<Identifier, World> worldGetter) implements IClaimsManagerListenerAPI {
 		@Override
 		public void onWholeRegionChange(@NotNull Identifier dimension, int regionX, int regionZ) {
 			onDimensionChange(dimension);
@@ -61,7 +63,8 @@ public class OPACCompat {
 
 		@Override
 		public void onDimensionChange(Identifier dimension) {
-			updateClaimLandmarksForDimension(server.getWorld(RegistryKey.of(RegistryKeys.WORLD, dimension)));
+			World world = worldGetter.apply(dimension);
+			if (world != null) updateClaimLandmarksForDimension(world);
 		}
 	}
 }

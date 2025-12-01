@@ -21,9 +21,9 @@ dependencies {
 	mappings variantOf(libs.yarn) { classifier "v2" }
 	modImplementation libs.fl
 	modImplementation libs.fapi
-	
+
 	modImplementation libs.surveyor
-	
+
 	modCompileOnly libs.openpac
 }
 
@@ -43,6 +43,7 @@ processResources {
 		mc            : compatibleVersions.split(", ")[0],
 		fl            : libs.versions.fl.get(),
 		fapi          : libs.versions.fapi.get(),
+		surveyor      : libs.versions.surveyor.get(),
 		openpac       : libs.versions.openpac.get(),
 	]
 	inputs.properties meta
@@ -85,6 +86,7 @@ modrinth {
 	syncBodyFrom = rootProject.file("README.md").text
 	dependencies {
 		required.version libs.fapi.get().getName(), libs.versions.fapi.get()
+		required.project libs.surveyor.get().getName()
 		optional.version libs.openpac.get().getName(), libs.versions.openpac.get()
 	}
 }

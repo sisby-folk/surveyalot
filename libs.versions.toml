@@ -1,0 +1,26 @@
+[versions]
+loom = "1.13.+"
+githubRelease = "2.+"
+minotaur = "2.+"
+
+mc = "1.20.1"
+fl = "0.16.14"
+yarn = "1.20.1+build.10"
+fapi = "0.92.2+1.20.1"
+
+surveyor = "1.0.0-alpha.14+1.20"
+openpac = "fabric-1.20.1-0.25.8"
+
+[plugins]
+loom = { id = "fabric-loom", version.ref = "loom" }
+githubRelease = { id = "com.github.breadmoirai.github-release", version.ref = "githubRelease" }
+minotaur = { id = "com.modrinth.minotaur", version.ref = "minotaur" }
+
+[libraries]
+mc = { group = "mojang", name = "minecraft", version.ref = "mc" }
+fl = { group = "net.fabricmc", name = "fabric-loader", version.ref = "fl" }
+yarn = { group = "net.fabricmc", name = "yarn", version.ref = "yarn" }
+fapi = { group = "net.fabricmc.fabric-api", name = "fabric-api", version.ref = "fapi" }
+
+surveyor = { group = "folk.sisby", name = "surveyor", version.ref = "surveyor" }
+openpac = { group = "maven.modrinth", name = "open-parties-and-claims", version.ref = "openpac" }

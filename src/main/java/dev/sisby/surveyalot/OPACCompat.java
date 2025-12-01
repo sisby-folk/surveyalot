@@ -41,7 +41,7 @@ public class OPACCompat {
 			for (IPlayerClaimPosListAPI claimPositions : Optional.ofNullable(player.getDimension(world.getDimensionKey().getValue())).map(d -> d.getStream().toList()).orElse(List.of())) {
 				IPlayerChunkClaimAPI claim = claimPositions.getClaimState();
 				landmarks.putForBatch(changes, Landmark.create(WorldLandmarks.GLOBAL, Identifier.of("opac", "claim/%s%s".formatted(claim.getPlayerId(), claim.getSubConfigIndex() == -1 ? "" : ("/" + claim.getSubConfigIndex()))), b -> b
-					.add(LandmarkComponentTypes.NAME, Text.literal((claim.getSubConfigIndex() == -1 ? "" : player.getClaimsName(claim.getSubConfigIndex()) + " - ") + player.getPlayerUsername() + "'s Claim"))
+					.add(LandmarkComponentTypes.NAME, Text.literal((claim.getSubConfigIndex() == -1 ? player.getClaimsName() == null ? "" : player.getClaimsName() + " - " : player.getClaimsName(claim.getSubConfigIndex()) + " - ") + player.getPlayerUsername() + "'s Claim"))
 					.add(LandmarkComponentTypes.COLOR, claim.getSubConfigIndex() == -1 ? Integer.valueOf(player.getClaimsColor()) : player.getClaimsColor(claim.getSubConfigIndex()))
 					.add(LandmarkComponentTypes.CHUNKS, RegionPos.chunksToRegions(claimPositions.getStream().toList()))
 				));

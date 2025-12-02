@@ -9,6 +9,6 @@ import xaero.pac.client.event.api.OPACClientAddonRegister;
 public class OPACCompatClient {
 	public static void init() {
 		OPACClientAddonRegister.EVENT.register((c, r) -> c.register(new OPACCompat.SurveyalotListener(i -> MinecraftClient.getInstance().world != null && MinecraftClient.getInstance().world.getRegistryKey().getValue().equals(i) ? MinecraftClient.getInstance().world : null)));
-		SurveyorClientEvents.Register.worldLoad(new Identifier("surveyalot", "opac"), (w, ws, p, t, s, l) -> OPACCompat.updateClaimLandmarksForDimension(w));
+		SurveyorClientEvents.Register.worldLoad(Identifier.of("surveyalot", "opac"), (w, ws, p, t, s, l) -> OPACCompat.updateClaimLandmarksForDimension(w));
 	}
 }

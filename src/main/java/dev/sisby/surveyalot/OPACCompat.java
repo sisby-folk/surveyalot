@@ -23,6 +23,7 @@ import xaero.pac.common.server.api.OpenPACServerAPI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
@@ -37,10 +38,11 @@ public class OPACCompat {
 		if (landmarks == null) return;
 		Map<UUID, Map<Identifier, Landmark>> changed = landmarks.removeAllForBatch(new HashMap<>(), l -> l.id().toString().startsWith("opac:claim"));
 		for (IPlayerClaimInfoAPI player : world instanceof ServerWorld sw ? OpenPACServerAPI.get(sw.getServer()).getServerClaimsManager().getPlayerInfoStream().toList() : OpenPACClientAPI.get().getClaimsManager().getPlayerInfoStream().toList()) {
-			for (IPlayerClaimPosListAPI claimPositions : Optional.ofNullable(player.getDimension(world.getDimensionKey().getValue())).map(d -> d.getStream().toList()).orElse(List.of())) {
+			for (IPlayerClaimPosListAPI claimPositions : Optional.ofNullable(player.getDimension(world.getRegistryKey().getValue())).map(d -> d.getStream().toList()).orElse(List.of())) {
 				IPlayerChunkClaimAPI claim = claimPositions.getClaimState();
+				String claimName = claim.getSubConfigIndex() != -1 ? Objects.requireNonNullElse(player.getClaimsName(claim.getSubConfigIndex()), "") : Objects.requireNonNullElse(player.getClaimsName(), "");
 				landmarks.putForBatch(changed, Landmark.create(WorldLandmarks.GLOBAL, Identifier.of("opac", "claim/%s%s".formatted(claim.getPlayerId(), claim.getSubConfigIndex() == -1 ? "" : ("/" + claim.getSubConfigIndex()))), b -> b
-					.add(LandmarkComponentTypes.NAME, Text.literal((claim.getSubConfigIndex() == -1 ? player.getClaimsName() == null ? "" : player.getClaimsName() + " - " : player.getClaimsName(claim.getSubConfigIndex()) + " - ") + player.getPlayerUsername() + "'s Claim"))
+					.add(LandmarkComponentTypes.NAME, Text.literal((claimName.isBlank() ? "" : claimName + " - ") + player.getPlayerUsername() + "'s Claim"))
 					.add(LandmarkComponentTypes.COLOR, claim.getSubConfigIndex() == -1 ? Integer.valueOf(player.getClaimsColor()) : player.getClaimsColor(claim.getSubConfigIndex()))
 					.add(LandmarkComponentTypes.CHUNKS, RegionPos.chunksToRegions(claimPositions.getStream().toList()))
 				));

@@ -41,8 +41,8 @@ public class OPACCompat {
 			for (IPlayerClaimPosListAPI claimPositions : Optional.ofNullable(player.getDimension(world.getRegistryKey().getValue())).map(d -> d.getStream().toList()).orElse(List.of())) {
 				IPlayerChunkClaimAPI claim = claimPositions.getClaimState();
 				String claimName = claim.getSubConfigIndex() != -1 ? Objects.requireNonNullElse(player.getClaimsName(claim.getSubConfigIndex()), "") : Objects.requireNonNullElse(player.getClaimsName(), "");
-				landmarks.putForBatch(changed, Landmark.create(WorldLandmarks.GLOBAL, Identifier.of("opac", "claim/%s%s".formatted(claim.getPlayerId(), claim.getSubConfigIndex() == -1 ? "" : ("/" + claim.getSubConfigIndex()))), b -> b
-					.add(LandmarkComponentTypes.NAME, Text.literal((claimName.isBlank() ? "" : claimName + " - ") + player.getPlayerUsername() + "'s Claim"))
+				landmarks.putForBatch(changed, Landmark.create(WorldLandmarks.GLOBAL, Identifier.of("opac", "claim/%s%s%s".formatted(claim.getPlayerId(), claim.getSubConfigIndex() == -1 ? "" : ("/" + claim.getSubConfigIndex()), claim.isForceloadable() ? "/forced" : "")), b -> b
+					.add(LandmarkComponentTypes.NAME, Text.literal((claimName.isBlank() ? "" : claimName + " - ") + player.getPlayerUsername() + "'s Claim" + (claim.isForceloadable() ? " (forceloaded)" : "")))
 					.add(LandmarkComponentTypes.COLOR, claim.getSubConfigIndex() == -1 ? Integer.valueOf(player.getClaimsColor()) : player.getClaimsColor(claim.getSubConfigIndex()))
 					.add(LandmarkComponentTypes.CHUNKS, RegionPos.chunksToRegions(claimPositions.getStream().toList()))
 				));

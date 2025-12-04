@@ -43,7 +43,7 @@ public class OPACCompat {
 				String claimName = claim.getSubConfigIndex() != -1 ? Objects.requireNonNullElse(player.getClaimsName(claim.getSubConfigIndex()), "") : Objects.requireNonNullElse(player.getClaimsName(), "");
 				landmarks.putForBatch(changed, Landmark.create(WorldLandmarks.GLOBAL, Identifier.of("opac", "claim/%s%s%s".formatted(claim.getPlayerId(), claim.getSubConfigIndex() == -1 ? "" : ("/" + claim.getSubConfigIndex()), claim.isForceloadable() ? "/forced" : "")), b -> b
 					.add(LandmarkComponentTypes.NAME, Text.literal((claimName.isBlank() ? "" : claimName + " - ") + player.getPlayerUsername() + "'s Claim" + (claim.isForceloadable() ? " (forceloaded)" : "")))
-					.add(LandmarkComponentTypes.COLOR, claim.getSubConfigIndex() == -1 ? Integer.valueOf(player.getClaimsColor()) : player.getClaimsColor(claim.getSubConfigIndex()))
+					.add(LandmarkComponentTypes.COLOR, Optional.ofNullable(claim.getSubConfigIndex() == -1 ? Integer.valueOf(player.getClaimsColor()) : player.getClaimsColor(claim.getSubConfigIndex())).map(i -> 0x00_FFFFFF & i).orElse(null))
 					.add(LandmarkComponentTypes.CHUNKS, RegionPos.chunksToRegions(claimPositions.getStream().toList()))
 				));
 			}

@@ -8,8 +8,6 @@ Works with <a href="https://modrinth.com/mod/open-parties-and-claims">OpenPaC</a
 
 ---
 
-> Notice: Surveyalot is built on **Surveyor 1.0 alpha** ecosystem, which is unstable and only on [github](https://github.com/sisby-folk/surveyor/releases).
-
 Works on client OR server, as OpenPAC exposes an API on both.
 
 ## Afterword

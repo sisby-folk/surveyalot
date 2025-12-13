@@ -4,7 +4,6 @@
 <center>
 Adds surveyor landmarks for chunk claims.<br/>
 Works with <a href="https://modrinth.com/mod/open-parties-and-claims">OpenPaC</a> and Surveyor maps (<a href="https://modrinth.com/mod/antique-atlas-4">Antique Atlas 4</a>, <a href="https://modrinth.com/mod/hoofprint">Hoofprint</a>)<br/>
-<b>Requires <a href="https://modrinth.com/mod/connector">Connector</a> and <a href="https://modrinth.com/mod/forgified-fabric-api">FFAPI</a> on (neo)forge.<br/></b>
 </center>
 
 ---

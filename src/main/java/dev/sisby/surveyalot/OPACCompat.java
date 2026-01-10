@@ -1,6 +1,7 @@
 package dev.sisby.surveyalot;
 
 import com.google.common.collect.Table;
+import com.google.common.collect.HashBasedTable;
 import folk.sisby.surveyor.WorldSummary;
 import folk.sisby.surveyor.landmark.Landmark;
 import folk.sisby.surveyor.landmark.WorldLandmarks;
@@ -37,7 +38,7 @@ public class OPACCompat {
 	public static void updateClaimLandmarksForDimension(World world) {
 		WorldLandmarks landmarks = WorldLandmarks.of(world);
 		if (landmarks == null) return;
-		Table<UUID, Identifier, Landmark> changed = landmarks.removeAllForBatch(new Table<>(), l -> l.id().toString().startsWith("opac:claim"));
+		Table<UUID, Identifier, Landmark> changed = landmarks.removeAllForBatch(HashBasedTable.create(), l -> l.id().toString().startsWith("opac:claim"));
 		for (IPlayerClaimInfoAPI player : world instanceof ServerWorld sw ? OpenPACServerAPI.get(sw.getServer()).getServerClaimsManager().getPlayerInfoStream().toList() : OpenPACClientAPI.get().getClaimsManager().getPlayerInfoStream().toList()) {
 			for (IPlayerClaimPosListAPI claimPositions : Optional.ofNullable(player.getDimension(world.getRegistryKey().getValue())).map(d -> d.getStream().toList()).orElse(List.of())) {
 				IPlayerChunkClaimAPI claim = claimPositions.getClaimState();

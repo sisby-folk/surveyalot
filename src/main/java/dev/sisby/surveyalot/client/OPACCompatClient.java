@@ -13,11 +13,11 @@ public class OPACCompatClient {
 	
 	public static void init() {
 		OPACClientAddonRegister.EVENT.register((c, r) -> c.register(new OPACCompat.SurveyalotListener(i -> MinecraftClient.getInstance().world != null && MinecraftClient.getInstance().world.getRegistryKey().getValue().equals(i) ? MinecraftClient.getInstance().world : null)));
-		ClientTickEvents.END_WORLD_TICK.register((world -> { 
+		ClientTickEvents.END_WORLD_TICK.register(world -> { 
 			if (WorldSummary.of(world) != null && WorldSummary.ofWorld(world).isClient() && !world.getRegistryKey().equals(prevDim)) {
 				prevDim = world.getRegistryKey();
 				OPACCompat.updateClaimLandmarksForDimension(world);
 		    }
-	 	}
+	 	});
 	}
 }

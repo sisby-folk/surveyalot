@@ -7,6 +7,7 @@ import net.minecraft.world.World;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
 import xaero.pac.client.event.api.OPACClientAddonRegister;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
 public class OPACCompatClient {
 	public static RegistryKey<World> prevDim = null;

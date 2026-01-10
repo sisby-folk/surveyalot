@@ -16,7 +16,7 @@ public class OPACCompatClient {
 	public static void init() {
 		OPACClientAddonRegister.EVENT.register((c, r) -> c.register(new OPACCompat.SurveyalotListener(i -> MinecraftClient.getInstance().world != null && MinecraftClient.getInstance().world.getRegistryKey().getValue().equals(i) ? MinecraftClient.getInstance().world : null)));
 		ClientTickEvents.END_WORLD_TICK.register(world -> { 
-			if (SurveyorClient.tryGetSummary(world) != null && SurveyorClient.tryGetSummary(world).isClient() && !world.getRegistryKey().equals(prevDim)) {
+			if (SurveyorClient.tryGetSummary(world.getRegistryKey()) != null && SurveyorClient.tryGetSummary(world.getRegistryKey()).isClient() && !world.getRegistryKey().equals(prevDim)) {
 				prevDim = world.getRegistryKey();
 				OPACCompat.updateClaimLandmarksForDimension(world);
 		    }

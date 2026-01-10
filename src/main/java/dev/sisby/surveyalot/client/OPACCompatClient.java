@@ -1,6 +1,7 @@
 package dev.sisby.surveyalot.client;
 
 import dev.sisby.surveyalot.OPACCompat;
+import folk.sisby.surveyor.WorldSummary;
 import folk.sisby.surveyor.client.SurveyorClientEvents;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.World;

@@ -34,9 +34,9 @@ public class OPACCompat {
 	}
 
 	public static void updateClaimLandmarksForDimension(World world) {
-		WorldLandmarks landmarks = world == null ? null : WorldSummary.of(world).landmarks();
+		WorldLandmarks landmarks = WorldLandmarks.of(world);
 		if (landmarks == null) return;
-		Map<UUID, Map<Identifier, Landmark>> changed = landmarks.removeAllForBatch(new HashMap<>(), l -> l.id().toString().startsWith("opac:claim"));
+		Table<UUID, Identifier, Landmark> changed = landmarks.removeAllForBatch(new HashMap<>(), l -> l.id().toString().startsWith("opac:claim"));
 		for (IPlayerClaimInfoAPI player : world instanceof ServerWorld sw ? OpenPACServerAPI.get(sw.getServer()).getServerClaimsManager().getPlayerInfoStream().toList() : OpenPACClientAPI.get().getClaimsManager().getPlayerInfoStream().toList()) {
 			for (IPlayerClaimPosListAPI claimPositions : Optional.ofNullable(player.getDimension(world.getRegistryKey().getValue())).map(d -> d.getStream().toList()).orElse(List.of())) {
 				IPlayerChunkClaimAPI claim = claimPositions.getClaimState();
@@ -48,7 +48,7 @@ public class OPACCompat {
 				));
 			}
 		}
-		landmarks.handleChanged(world, changed, world.isClient(), null);
+		landmarks.handleChanged(changed, world.isClient(), null);
 	}
 
 	public record SurveyalotListener(Function<Identifier, World> worldGetter) implements IClaimsManagerListenerAPI {
